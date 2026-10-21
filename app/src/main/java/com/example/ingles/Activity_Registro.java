@@ -1,6 +1,7 @@
 package com.example.ingles;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -71,7 +72,9 @@ public class Activity_Registro extends AppCompatActivity {
         Alumno alumno = new Alumno(nombre, matricula, correo, carrera, contrasena);
 
         ApiService apiService = ApiClient.getClient();
-        Call<ApiResponse> call = apiService.gardaAlumno("", alumno);
+
+        // CORRECCIÓN: Ya no se envían comillas vacías (""). Solo se pasa el alumno.
+        Call<ApiResponse> call = apiService.gardaAlumno(alumno);
 
         call.enqueue(new Callback<ApiResponse>() {
             @Override
@@ -83,13 +86,21 @@ public class Activity_Registro extends AppCompatActivity {
                         finish();
                     }
                 } else {
-                    Toast.makeText(Activity_Registro.this, "Error en el servidor", Toast.LENGTH_SHORT).show();
+                    // Si CodeIgniter rechaza la petición, esto te mostrará el error exacto en pantalla
+                    try {
+                        String errorBody = response.errorBody() != null ? response.errorBody().string() : "Error desconocido";
+                        Log.e("ERROR_API", "Rechazo del servidor: " + errorBody);
+                        Toast.makeText(Activity_Registro.this, "Error del servidor. Código: " + response.code(), Toast.LENGTH_LONG).show();
+                    } catch (Exception e) {
+                        Toast.makeText(Activity_Registro.this, "Error procesando respuesta del servidor", Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
 
             @Override
             public void onFailure(Call<ApiResponse> call, Throwable t) {
-                Toast.makeText(Activity_Registro.this, "Error de conexión: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(Activity_Registro.this, "Error de red: " + t.getMessage(), Toast.LENGTH_LONG).show();
+                Log.e("ERROR_API", "Falla en Retrofit: " + t.getMessage());
             }
         });
     }
