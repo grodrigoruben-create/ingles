@@ -1,5 +1,6 @@
 package com.example.ingles;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ArrayAdapter;
@@ -71,7 +72,7 @@ public class Activity_Registro extends AppCompatActivity {
 
         Alumno alumno = new Alumno(nombre, matricula, correo, carrera, contrasena);
 
-        ApiService apiService = ApiClient.getClient();
+        ApiService apiService = ApiClient.getClient(this);
 
         // CORRECCIÓN: Ya no se envían comillas vacías (""). Solo se pasa el alumno.
         Call<ApiResponse> call = apiService.gardaAlumno(alumno);
@@ -83,7 +84,10 @@ public class Activity_Registro extends AppCompatActivity {
                     ApiResponse apiResponse = response.body();
                     Toast.makeText(Activity_Registro.this, apiResponse.getMessage(), Toast.LENGTH_LONG).show();
                     if (apiResponse.getStatus() == 200 || apiResponse.getStatus() == 201) {
-                        finish();
+                        // Redirigir a la pantalla de Login
+                        Intent intent = new Intent(Activity_Registro.this, Activity_Login.class);
+                        startActivity(intent);
+                        finish(); // Cierra la pantalla de registro para no volver atrás
                     }
                 } else {
                     // Si CodeIgniter rechaza la petición, esto te mostrará el error exacto en pantalla

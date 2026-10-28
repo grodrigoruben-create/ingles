@@ -5,6 +5,7 @@ package com.example.ingles;
 
 public class ApiResponse {
 
+
     private int status;
 
     private String message;

@@ -35,5 +35,11 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(MainActivity.this, Activity_Registro.class);
             startActivity(intent);
         });
+
+        b2.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, Activity_Login.class);
+            startActivity(intent);
+        });
+
     }
 }

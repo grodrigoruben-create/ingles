@@ -6,7 +6,9 @@ import retrofit2.http.POST;
 
 public interface ApiService {
 
-    // Se eliminó el @Header, solo se envía el Body (los datos del alumno)
     @POST("api/alumno")
     Call<ApiResponse> gardaAlumno(@Body Alumno alumno);
+
+    @POST("auth/login")
+    Call<ApiResponse> loginAlumno(@Body LoginRequest loginRequest);
 }
